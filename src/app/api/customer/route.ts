@@ -4,24 +4,50 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
 import { AuthOprions } from '@/lib/auth';
 
-export async function POST(request: Request){
+//ROTA PARA CADASTRAR CLIENTE
+export async function POST(request: Request) {
 
     const session = getServerSession(AuthOprions)
 
-    if(!session){
+    if (!session) {
         return NextResponse.json({ error: 'not authorized' }, { status: 401 })
     }
 
     const data = await request.json()
 
-    try{
+    try {
         await prisma.customer.create({
             data: data
         })
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return NextResponse.json({ error: 'Failed crete new cutomer' }, { status: 400 })
     }
 
     return NextResponse.json({ message: 'Rota de cadastro' })
+}
+
+export async function DELETE(req: Request) {
+
+    const session = getServerSession(AuthOprions)
+
+    if (!session) {
+        return NextResponse.json({ error: 'not authorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("id");
+
+    try {
+        await prisma.customer.delete({
+            where: {
+                id: userId as string
+            }
+        })
+
+        return NextResponse.json({ ok: true });
+        
+    } catch (err) {
+        return NextResponse.json({ error: 'Failed delete cutomer' }, { status: 400 })
+    }
 }
