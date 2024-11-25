@@ -15,6 +15,8 @@ export default async function NewCostumer(){
       redirect('/')
     }
 
+
+
     return(
         <Container>
            <main className="flex flex-col mt-9 mb-2">

@@ -37,6 +37,7 @@ export default function NewCustomerForm({ userId } : { userId: string }) {
 
         try {
             await api.post('/api/customer', data);
+            router.refresh();
             router.replace('/dashboard/customer')
         } catch (err) {
             console.log(err)
