@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
+import Input from "@/components/input"
+
 const Schema = z.object({
     name: z.string().min(1, 'O campo nom é obrigatório'),
     email: z.string().email('Digite um email válido').min(1, 'O email é obrigatório'),
-    phone: z.string().refine(value =>{
+    phone: z.string().refine(value => {
         return /^(?:\(\d{2}\)\s?)?\d{9}$/.test(value) || /^\d{2}\s\d{9}$/.test(value) || /^\d{11}$/.test(value)
     }, {
         message: "o numero de telefone dever esta (DD) 999999999"
@@ -16,18 +18,55 @@ const Schema = z.object({
 
 type formData = z.infer<typeof Schema>
 
-export default function NewCustomerForm(){
+export default function NewCustomerForm() {
 
     const { register, handleSubmit, formState: { errors } } = useForm<formData>({
         resolver: zodResolver(Schema)
     })
 
-    return(
-        <form>
-            <label>Nome completo</label>
-            <input 
-            placeholder="Digite o nome completo..."
-            type="text" />
+    async function handleRegisterCostumer(data: formData){
+        console.log(data);
+    }
+
+    return (
+        <form className="flex flex-col m-6" onSubmit={handleSubmit(handleRegisterCostumer)}>
+            <label className="mb-1 text-lg font-medium">Nome completo</label>
+            <Input
+                type="text"
+                name="name"
+                placeholder="Digite o nome completo"
+                error={errors.name?.message}
+                register={register} />
+            <section className="flex gap-2 flex-col sm:flex-row">
+                <article className="flex-1">
+                    <label className="mb-1 text-lg font-medium">Telefone</label>
+                    <Input
+                        type="number"
+                        name="phone"
+                        placeholder="Digite o nome completo"
+                        error={errors.phone?.message}
+                        register={register} />
+                </article>
+                <article className="flex-1">
+                    <label className="mb-1 text-lg font-medium">Email</label>
+                    <Input
+                        type="email"
+                        name="email"
+                        placeholder="Digite o email"
+                        error={errors.email?.message}
+                        register={register} />
+                </article>
+            </section>
+
+            <label className="mb-1 text-lg font-medium">Endereço</label>
+            <Input
+                type="text"
+                name="address"
+                placeholder="Digite seu endereço completo"
+                error={errors.address?.message}
+                register={register} />
+
+            <button type="submit" className="bg-blue-500 my-4 px-2 h-11 rounded text-white font-bold">Cadastrar</button>
         </form>
     )
 }
