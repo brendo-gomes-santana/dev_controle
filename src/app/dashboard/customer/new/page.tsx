@@ -6,6 +6,7 @@ import Container from "@/components/container";
 import { AuthOprions } from "@/lib/auth";
 import NewCustomerForm from "../components/form";
 
+
 export default async function NewCostumer(){
 
     const session = await getServerSession(AuthOprions);
@@ -24,7 +25,7 @@ export default async function NewCostumer(){
                 <h1 className="text-3xl font-bold">Novo Cliente</h1>
             </div>
 
-            <NewCustomerForm/>
+            <NewCustomerForm userId={session.user.id}/>
 
            </main>
         </Container>
