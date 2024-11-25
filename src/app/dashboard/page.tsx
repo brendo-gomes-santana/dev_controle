@@ -18,7 +18,7 @@ export default async function Dashboard() {
       <main className="mt-9 mb-2">
         <section className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Chamados</h1>
-          <Link href="/bashboard/new" className="bg-blue-500 px-4 py-1 rounded text-white">Abrir chamado</Link>
+          <Link href="/dashboard/new" className="bg-blue-500 px-4 py-1 rounded text-white">Abrir chamado</Link>
         </section>
 
         <table className="min-w-full my-2">
