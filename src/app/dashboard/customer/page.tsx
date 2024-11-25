@@ -44,7 +44,9 @@ export default async function Costumer() {
                             />
                         )
                     })}
-
+                    {customers.length === 0 && (
+                        <h1 className="text-gray-600">Você ainda não possui nenhum cliente.</h1>
+                    )}
                 </section>
             </main>
         </Container>

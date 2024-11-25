@@ -20,7 +20,7 @@ export default function CardCustomer({ id, phone, email, name }: CardCustomer) {
                     id
                 }
             })
-            
+            router.refresh();
         } catch (err) {
             console.log(err)
         }
