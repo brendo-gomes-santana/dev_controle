@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiSearch, FiX } from "react-icons/fi";
 
-
+import api from "@/lib/api";
 import Input from "@/components/input"
 import FormTicket from "./components/FormTicket";
 
@@ -23,15 +23,34 @@ type FormData = z.infer<typeof schema>
 
 export default function OpenTicket() {
 
-    const [customer, setCustomer] = useState<CustomerDataInfor | null>({ id: '1', name: 'João' });
+    const [customer, setCustomer] = useState<CustomerDataInfor | null>(null);
 
-    const { handleSubmit, register, setValue, formState: { errors } } = useForm<FormData>({
+    const { handleSubmit, register, setValue,setError,formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema)
     })
 
     function handleClearCustomer() {
         setCustomer(null);
         setValue("email", "")
+    }
+
+    async function handleSearchCustomer(data: FormData){
+       try{
+        const r = await api.get('/api/customer', {
+            params: data
+        })
+        if(r.data === null){
+            setError("email", { type: "customer", message: "Ops! Cliente não foi encontrado" })
+            return
+        }
+        setCustomer({
+            id: r.data.id,
+            name: r.data.name
+        });
+
+       }catch(err){
+        console.log(err);
+       } 
     }
 
     return (
@@ -49,7 +68,7 @@ export default function OpenTicket() {
                         </button>
                     </div>
                 ) : (
-                    <form className="bg-slate-200 py-6 px-2 rounded border-2">
+                    <form className="bg-slate-200 py-6 px-2 rounded border-2" onSubmit={handleSubmit(handleSearchCustomer)}>
                         <div className="flex flex-col gap-3">
                             <Input
                                 error={errors.email?.message}
@@ -58,7 +77,7 @@ export default function OpenTicket() {
                                 register={register}
                                 type="text" />
 
-                            <button className="bg-blue-500 flex flex-row gap-3 px-2 h-11 items-center justify-center text-white font-bold rounded">
+                            <button type="submit" className="bg-blue-500 flex flex-row gap-3 px-2 h-11 items-center justify-center text-white font-bold rounded">
                                 Procurar cliente
                                 <FiSearch size={24} color="#fff" />
                             </button>

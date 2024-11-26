@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
 import { AuthOprions } from '@/lib/auth';
 
+
 //ROTA PARA CADASTRAR CLIENTE
 export async function POST(request: Request) {
 
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Rota de cadastro' })
 }
 
+//DELETE CLIENTE
 export async function DELETE(req: Request) {
 
     const session = getServerSession(AuthOprions)
@@ -44,7 +46,7 @@ export async function DELETE(req: Request) {
         }
     })
 
-    if(findTicket){
+    if (findTicket) {
         return NextResponse.json({ error: 'Failed delete cutomer' }, { status: 400 })
     }
 
@@ -60,4 +62,30 @@ export async function DELETE(req: Request) {
     } catch (err) {
         return NextResponse.json({ error: 'Failed delete cutomer' }, { status: 400 })
     }
+}
+
+export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url)
+    const customerEmail = searchParams.get('email');
+
+    if (!customerEmail || customerEmail === "") {
+        return NextResponse.json({ error: 'Customer not found' }, { status: 400 })
+    }
+
+    try {
+        const customer = await prisma.customer.findFirst({
+            where: {
+                email: customerEmail
+            }
+        })
+
+        return NextResponse.json(customer);
+        
+    } catch (err) {
+        console.log(err);
+        return NextResponse.json({ error: 'Customer not found' }, { status: 400 })
+    }
+
+
+    return NextResponse.json({ message: "Email recebido" })
 }
