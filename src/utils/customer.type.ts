@@ -6,4 +6,5 @@ export interface CustomerProps {
     create_at: string;
     updted_at: string;
     userId: string;
+    address: string | null
 }

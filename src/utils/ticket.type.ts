@@ -8,4 +8,5 @@ export interface TicketProps {
     phone: string;
     email: string;
     status: string;
+    description: string;
 }
