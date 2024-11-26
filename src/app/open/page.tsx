@@ -14,7 +14,7 @@ const schema = z.object({
     email: z.string().email('Digite o email do cliente para localizar').min(1, 'Campo obrigatório')
 })
 
-interface CustomerDataInfor {
+export interface CustomerDataInfor {
     id: string;
     name: string;
 }
@@ -85,7 +85,7 @@ export default function OpenTicket() {
                     </form>
                 )}
                 {customer !== null && (
-                    <FormTicket />
+                    <FormTicket customer={customer}/>
                 )}
 
             </article>

@@ -4,6 +4,8 @@ import { AuthOprions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 
+
+// ATUALIZAR O TICKET PARA CONCLUIDO
 export async function PATCH(req: Request){
     const session = await getServerSession(AuthOprions);
     if(!session || !session.user){
@@ -40,4 +42,32 @@ export async function PATCH(req: Request){
         console.log(err);
         return NextResponse.json({ error: "Filed updtade ticket" }, { status: 400 })
     }
+}
+
+// CADASTRAR UM TICKET
+export async function POST(req: Request){
+    const { customerId, name, description } = await req.json()
+
+        if(!customerId || !name || !description){
+            return NextResponse.json({ error: "Failed create new ticket" }, { status: 400 })
+        }
+
+    try{
+
+        await prisma.ticket.create({
+            data: {
+                name,
+                description,
+                status: 'ABERTO',
+                customerId
+            }
+        })
+
+        return NextResponse.json({ message: "Ticket create sucess" })
+
+    }catch(err){
+        console.log(err)
+        return NextResponse.json({ error: "Failed create new ticket" },{ status: 400 })
+    }
+
 }

@@ -2,8 +2,9 @@
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import api from "@/lib/api";
 
-
+import { CustomerDataInfor } from "../../page";
 import Input from "@/components/input"
 
 const schema = z.object({
@@ -13,14 +14,27 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export default function FormTicket() {
+export default function FormTicket({ customer }: { customer: CustomerDataInfor }) {
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema)
     })
 
+
+    async function handlRegisterTicket(data: FormData){
+        try{
+            const res = await api.post('/api/ticket', {
+                name: data.name,
+                description: data.description,
+                customerId: customer.id
+            })
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     return (
-        <form className="bg-slate-200 mt-6 px-4 py-6 rounded border-2">
+        <form className="bg-slate-200 mt-6 px-4 py-6 rounded border-2" onSubmit={handleSubmit(handlRegisterTicket)}>
             <label className="mb-1 font-medium text-lg">Nome do chamado</label>
             <Input
                 register={register}
@@ -37,7 +51,7 @@ export default function FormTicket() {
                 id="description" 
                 {...register("description")}></textarea>
             {errors.description?.message && (
-                <p className="bg-red-500 my-1">{errors.description?.message}</p>
+                <p className="text-red-500 my-1">{errors.description?.message}</p>
             )}
 
             <button type="submit" className="bg-blue-500 rounded-md w-full h-11 px-2 text-white font-bold">Cadastrar</button>
