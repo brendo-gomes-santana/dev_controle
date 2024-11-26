@@ -56,6 +56,9 @@ export default async function Dashboard() {
           </tbody>
         </table>
 
+        {listTicket.length === 0 && (
+          <h1 className="px-2 text-gray-600">Nenhum ticket foi encontrado...</h1>
+        )}
       </main>
     </Container>
   )
