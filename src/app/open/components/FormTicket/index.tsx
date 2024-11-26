@@ -16,18 +16,20 @@ type FormData = z.infer<typeof schema>
 
 export default function FormTicket({ customer }: { customer: CustomerDataInfor }) {
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema)
     })
 
 
     async function handlRegisterTicket(data: FormData){
         try{
-            const res = await api.post('/api/ticket', {
+            await api.post('/api/ticket', {
                 name: data.name,
                 description: data.description,
                 customerId: customer.id
             })
+
+            reset()
         }catch(err){
             console.log(err)
         }
