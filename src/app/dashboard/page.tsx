@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import { AuthOprions } from "@/lib/auth";
 import TicketItem from "./components/ticket";
+import prisma from "@/lib/prisma";
+
 export default async function Dashboard() {
 
   const session = await getServerSession(AuthOprions);
@@ -12,6 +14,19 @@ export default async function Dashboard() {
   if (!session || !session.user) {
     redirect('/')
   }
+
+  const listTicket = await prisma.ticket.findMany({
+    where: {
+      userId: session.user.id,
+      status: "ABERTO"
+    },
+    include: {
+      customer: true
+    }
+  })
+
+
+  
 
   return (
     <Container>
@@ -31,7 +46,13 @@ export default async function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            <TicketItem />
+            {listTicket.map((ticket) => {
+              
+              return (
+                <TicketItem key={ticket.id} customer={ticket.customer} ticket={ticket}/>
+              )
+            })}
+
           </tbody>
         </table>
 
